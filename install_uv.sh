@@ -7,7 +7,7 @@
 # This script:
 #   1. Ensures uv is installed (installs to ~/.local/bin or uses existing)
 #   2. Optionally clones and patches torchview (same as install.sh)
-#   3. Runs uv sync --python 3.10 (creates .venv and installs dependencies)
+#   3. Runs uv sync with the committed lockfile
 #   4. Installs patched torchview from source if available
 #   5. Runs uv pip install -e . (editable install of Solar)
 #
@@ -21,11 +21,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 TORCHVIEW_REPO="https://github.com/mert-kurttutan/torchview.git"
 TORCHVIEW_COMMIT="edbe1fa"
-TORCHVIEW_DIR="${REPO_ROOT}/torchview"
+TORCHVIEW_DIR="${SCRIPT_DIR}/third_party/torchview"
 PATCH_FILE="${SCRIPT_DIR}/patches/torchview-parameter-tensors.patch"
 
 SKIP_TORCHVIEW=false
@@ -92,8 +91,11 @@ if [[ "$SKIP_TORCHVIEW" != "true" ]]; then
         if git apply --check "${PATCH_FILE}" 2>/dev/null; then
             git apply "${PATCH_FILE}"
             echo "  Patch applied successfully."
+        elif git apply --reverse --check "${PATCH_FILE}" 2>/dev/null; then
+            echo "  Patch already applied."
         else
-            echo "  Patch already applied or conflicts detected, skipping."
+            echo "  ERROR: Patch conflicts with the torchview checkout." >&2
+            exit 1
         fi
     else
         echo "  Warning: Patch file not found: ${PATCH_FILE}"
@@ -104,10 +106,10 @@ else
     echo ""
 fi
 
-# Step 2: uv sync with Python 3.10 (creates .venv, installs from pyproject.toml)
-echo "==> Step 2: uv sync --python 3.10..."
+# Step 2: uv sync with Python 3.10 and the committed lockfile
+echo "==> Step 2: uv sync --frozen --python 3.10.20..."
 cd "${SCRIPT_DIR}"
-uv sync --python 3.10
+uv sync --frozen --python 3.10.20
 echo "  Sync complete."
 echo ""
 
@@ -130,11 +132,10 @@ echo ""
 
 echo "=== Installation complete ==="
 echo ""
-echo "Virtual env: ${SCRIPT_DIR}/.venv"
-echo "Activate with: source ${SCRIPT_DIR}/.venv/bin/activate"
+VIRTUAL_ENV_PATH="${UV_PROJECT_ENVIRONMENT:-${SCRIPT_DIR}/.venv}"
+echo "Virtual env: ${VIRTUAL_ENV_PATH}"
+echo "Activate with: source ${VIRTUAL_ENV_PATH}/bin/activate"
 echo ""
 echo "To verify:"
 echo "  uv run python -c 'import torchview; print(torchview.__file__)'"
 echo "  uv run python -c 'from solar.graph import PyTorchProcessor; print(\"OK\")'"
-echo ""
-echo "Optional: run 'uv lock' and commit uv.lock for reproducible installs."

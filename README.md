@@ -21,7 +21,7 @@ Solar is a toolkit for analyzing PyTorch model graphs, converting them to einsum
 
 ```bash
 # Install Solar in development mode
-cd solar
+cd SOLAR-kunlun
 pip install -e .
 ```
 
@@ -33,6 +33,17 @@ pip install -r requirements.txt
 # For graph visualization (optional)
 pip install graphviz matplotlib
 ```
+
+### Reproducible uv environment
+
+```bash
+bash scripts/setup_locked_env.sh
+```
+
+This creates the validated Python 3.10.20 and CPU PyTorch 2.9.0 environment
+under `<workspace>/pyvenv`, prepares patched torchview in `third_party/`, and
+syncs dependencies from `uv.lock`. Graph PDF output also requires the Graphviz
+`dot` executable; the Python `graphviz` package does not provide it.
 
 ## The 5-Stage Pipeline
 

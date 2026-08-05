@@ -151,3 +151,9 @@ uv.lock
 # Environment config
 env.sh
 
+# Project toolchain files are intentionally versioned.
+!.python-version
+!uv.lock
+
+# Third-party sources are recreated by scripts/setup_locked_env.sh.
+third_party/torchview/

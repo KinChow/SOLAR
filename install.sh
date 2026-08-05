@@ -29,11 +29,10 @@ set -euo pipefail
 #   bash install.sh --skip-torch # Skip torch installation (if already installed)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 TORCHVIEW_REPO="https://github.com/mert-kurttutan/torchview.git"
 TORCHVIEW_COMMIT="edbe1fa"
-TORCHVIEW_DIR="${REPO_ROOT}/torchview"
+TORCHVIEW_DIR="${SCRIPT_DIR}/third_party/torchview"
 PATCH_FILES=(
     "${SCRIPT_DIR}/patches/torchview-parameter-tensors.patch"
     "${SCRIPT_DIR}/patches/torchview-collect-attributes.patch"

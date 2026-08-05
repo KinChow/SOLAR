@@ -11,7 +11,7 @@ version = "1.1.0"
 description = "PyTorch model graph analysis and einsum optimization toolkit with LLM support"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.11"
 authors = [
     { name = "Solar Team", email = "solar@example.com" }
 ]
@@ -22,13 +22,11 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
 ]
-# Must match requirements.txt
+# Runtime compatibility is declared here; uv.lock pins the validated environment.
 dependencies = [
-    "torch>=2.9.0",
-    "torchview>=0.2.6",
+    "torch>=2.9,<2.10",
+    "torchview>=0.2.6,<0.3",
     "networkx>=3.0",
     "pyyaml>=6.0",
     "numpy>=1.24.0",
@@ -62,3 +60,11 @@ solar-predict-perf-model = "solar.cli.predict_perf_model:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["solar*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+# PyPI torchview 0.2.7 does not expose parameter-tensor nodes required by
+# SOLAR. The in-repository checkout is pinned and patched by the setup scripts.
+torchview = { path = "third_party/torchview", editable = true }
