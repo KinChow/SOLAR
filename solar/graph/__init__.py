@@ -22,9 +22,11 @@ PyTorch model computation graphs.
 from solar.graph.benchmark_processor import BenchmarkProcessor
 from solar.graph.pytorch_processor import PyTorchProcessor
 from solar.graph.torchview_processor import TorchviewProcessor
+from solar.graph.workload_extractor import WorkloadExtractor
 
 __all__ = [
     "BenchmarkProcessor",
     "PyTorchProcessor",
     "TorchviewProcessor",
+    "WorkloadExtractor",
 ]

@@ -45,6 +45,55 @@ under `<workspace>/pyvenv`, prepares patched torchview in `third_party/`, and
 syncs dependencies from `uv.lock`. Graph PDF output also requires the Graphviz
 `dot` executable; the Python `graphviz` package does not provide it.
 
+## The Versioned 4-Stage Offline Pipeline
+
+The four-stage pipeline adds typed, versioned intermediate representations
+without replacing the existing five-stage pipeline or its YAML files:
+
+```text
+PyTorch model
+  -> Stage 1: WorkloadGraph
+  -> Stage 2: Hybrid Operator IR + Execution Graph
+  -> Stage 3: Cost IR
+  -> Stage 4: Performance Report
+```
+
+Hardware capability is introduced only in Stage 4. The initial implementation
+supports the official FP32 Matmul example on `H100_PCIe`. It reports the
+theoretical lower bound (`T_lb_us`). Unrecognized operators remain explicit
+opaque kernels and are reported as unsupported instead of receiving a fallback
+cost.
+
+Run all four stages:
+
+```bash
+solar-estimate-model \
+  --model-file examples/Matmul/Matmul.py \
+  --output-dir examples/Matmul/output_four_stage \
+  --hardware H100_PCIe \
+  --force-rerun
+
+# Equivalent example wrapper
+bash examples/Matmul/run_four_stage.sh
+```
+
+Outputs:
+
+```text
+output_four_stage/
+├── stage1/pytorch_graph.yaml
+├── stage1/workload_graph.yaml
+├── stage2/operator_ir.yaml
+├── stage2/execution_graph.yaml
+├── stage3/cost_ir.yaml
+├── stage4/performance_report_H100_PCIe.yaml
+└── manifest.yaml
+```
+
+Each stage can also run independently through `solar-extract-workload`,
+`solar-normalize-operators`, `solar-analyze-cost`, and
+`solar-predict-performance`.
+
 ## The 5-Stage Pipeline
 
 Solar processes models through five distinct stages:

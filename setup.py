@@ -76,6 +76,11 @@ setuptools.setup(
             "solar-toeinsum-model=solar.cli.toeinsum_model:main",
             "solar-analyze-model=solar.cli.analyze_model:main",
             "solar-predict-perf-model=solar.cli.predict_perf_model:main",
+            "solar-extract-workload=solar.cli.extract_workload:main",
+            "solar-normalize-operators=solar.cli.normalize_operators:main",
+            "solar-analyze-cost=solar.cli.analyze_cost:main",
+            "solar-predict-performance=solar.cli.predict_performance:main",
+            "solar-estimate-model=solar.cli.estimate_model:main",
         ],
     },
 )

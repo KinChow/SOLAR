@@ -28,8 +28,10 @@ For performance modeling, see `solar.perf`.
 # Local analysis modules
 from solar.analysis.graph_analyzer import EinsumGraphAnalyzer
 from solar.analysis.model_analyzer import ModelAnalyzer
+from solar.analysis.cost_analyzer import CostAnalyzer
 
 __all__ = [
     "EinsumGraphAnalyzer",
+    "CostAnalyzer",
     "ModelAnalyzer",
 ]

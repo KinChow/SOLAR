@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solar-web-backend"
+version = "0.1.0"
+description = "FastAPI backend for the SOLAR four-stage Web demo"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "httpx>=0.28,<1",
+    "pydantic>=2.10,<3",
+    "pyyaml>=6,<7",
+    "solar",
+    "torch==2.9.0",
+    "uvicorn[standard]>=0.34,<1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9,<10",
+    "pytest-asyncio>=1,<2",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.uv.sources]
+solar = { path = "../..", editable = true }
+torchview = { path = "../../third_party/torchview", editable = true }

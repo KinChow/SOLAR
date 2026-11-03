@@ -23,8 +23,12 @@ Key components:
 """
 
 from solar.perf.perf_model import EinsumGraphPerfModel
+from solar.perf.capability import HardwareCapability, HardwareCapabilityLoader
+from solar.perf.predictor import PerformancePredictor
 
 __all__ = [
     "EinsumGraphPerfModel",
+    "HardwareCapability",
+    "HardwareCapabilityLoader",
+    "PerformancePredictor",
 ]
-
